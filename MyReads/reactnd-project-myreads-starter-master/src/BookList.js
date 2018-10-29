@@ -6,8 +6,13 @@ import { Link } from 'react-router-dom'
 class BookList extends Component {
 
     updateShelf = (book, shelf) => {
+        let booksUpdated = this.props.books
         book.shelf = shelf
-        BooksAPI.update(book, shelf)
+        BooksAPI.update(book, shelf).then(response => {
+            this.setState({
+              books: booksUpdated
+            });
+          });
       };
     
     render() {

@@ -70,7 +70,7 @@ class BookSearch extends Component {
                                 </div>
                             </div>
                             <div className="book-title">{book.title}</div>
-                            {book.authors.length > 0 && (
+                            {book.authors && (
                             <div className="book-authors">{book.authors[0]}</div>
                             )}
                         </li>
