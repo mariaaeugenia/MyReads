@@ -60,7 +60,7 @@ class BookSearch extends Component {
                                     backgroundImage: "url(" + book.imageLinks.thumbnail + ")" }}>
                                 </div>
                                 <div className="book-shelf-changer">
-                                    <select value={book.shelf} onChange={s => this.updateShelf(book, s.target.value)}>
+                                    <select value={book.shelf ?book.shelf  :"none"} onChange={s => this.updateShelf(book, s.target.value)}>
                                     <option value="move" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>
