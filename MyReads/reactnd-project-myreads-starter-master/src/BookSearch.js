@@ -12,27 +12,34 @@ class BookSearch extends Component {
     
     state = {
         query: '',
-        results: [],
-        currentShelf: 'none'
+        results: []
     }
 
     searchBooks = () => {
-        this.setState({ results: [] })
-        if (this.search.value) {
+        if (!this.search.value || this.search.value==="") {
             this.setState({
-                query: this.search.value
-            }, () => {
-                BooksAPI.search(this.state.query, 20).then(
-                    response => {
-                        response.length > 0
-                            ? this.setState({ results: response })
-                            : this.setState({ results: [] })
-                    }
-                );
+                results: [],
+                query: ''
             })
-        } else {
-            this.setState({ results: [] })
+            return
         }
+        
+        this.setState({
+            query: this.search.value
+        }, () => {
+            BooksAPI.search(this.state.query).then(
+                response => {
+                    response.map( book => {
+                        const thisBook = this.props.myBooks.find(myBook => myBook.id === book.id);
+                        thisBook
+                            ? book["shelf"] = thisBook.shelf
+                            : book["shelf"] = "none"
+                        
+                    })
+                    this.setState({results:response})
+                }
+            );
+        })
     }
 
 
@@ -62,7 +69,7 @@ class BookSearch extends Component {
                                     </div>
                                 )}
                                 <div className="book-shelf-changer">
-                                    <select value="none" onChange={s => this.props.updateShelf(book, s.target.value)}>
+                                    <select value={book.shelf} onChange={s => this.props.updateShelf(book, s.target.value)}>
                                     <option value="move" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>
