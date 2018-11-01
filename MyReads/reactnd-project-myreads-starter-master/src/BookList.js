@@ -1,19 +1,13 @@
 import React, { Component } from 'react'
-import BookShelf from './BookShelf';
-import * as BooksAPI from './BooksAPI'
+import BookShelf from './BookShelf'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 class BookList extends Component {
 
-    updateShelf = (book, shelf) => {
-        let booksUpdated = this.props.books
-        book.shelf = shelf
-        BooksAPI.update(book, shelf).then(response => {
-            this.setState({
-              books: booksUpdated
-            });
-          });
-      };
+    static propTypes = {
+        updateShelf: PropTypes.func.isRequired
+    }
     
     render() {
 
@@ -26,19 +20,19 @@ class BookList extends Component {
                 <BookShelf
                     key="currently"
                     books={this.props.books.filter(book => book.shelf === "currentlyReading")}
-                    newShelf={this.updateShelf}
+                    newShelf={this.props.updateShelf}
                     shelfTitle="Currently Reading"
                 />
                 <BookShelf
                     key="wantToRead"
                     books={this.props.books.filter(book => book.shelf === "wantToRead")}
-                    newShelf={this.updateShelf}
+                    newShelf={this.props.updateShelf}
                     shelfTitle="Want to Read"
                 />
                 <BookShelf
                     key="read"
                     books={this.props.books.filter(book => book.shelf === "read")}
-                    newShelf={this.updateShelf}
+                    newShelf={this.props.updateShelf}
                     shelfTitle="Read"
                 />
                 </div>

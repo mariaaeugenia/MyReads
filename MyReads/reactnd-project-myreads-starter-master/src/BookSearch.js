@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
 import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 class BookSearch extends Component {
 
+    static propTypes = {
+        updateShelf: PropTypes.func.isRequired,
+        myBooks: PropTypes.array.isRequired
+    }
+    
     state = {
         query: '',
         results: [],
+        currentShelf: 'none'
     }
 
     searchBooks = () => {
+        this.setState({ results: [] })
         if (this.search.value) {
             this.setState({
                 query: this.search.value
@@ -27,17 +35,9 @@ class BookSearch extends Component {
         }
     }
 
-    updateShelf = (book, shelf) => {
-        let booksUpdated = this.props.books
-        book.shelf = shelf
-        BooksAPI.update(book, shelf).then(response => {
-            this.setState({
-              books: booksUpdated
-            });
-          });
-      };
 
     render() {
+
         return(
             <div className="search-books">
             <div className="search-books-bar">
@@ -50,17 +50,19 @@ class BookSearch extends Component {
               </div>
             </div>
             <div className="search-books-results">
-            { this.state.results.length > 0 && (
+            { this.state.results && (
                 <ol className="books-grid">
                     {this.state.results.map((book) => 
                         <li key={book.id} className="book">
                             <div className="book-top">
-                                <div className="book-cover" style={{ 
-                                    width: 128, height: 193, 
-                                    backgroundImage: "url(" + book.imageLinks.thumbnail + ")" }}>
-                                </div>
+                                { book.imageLinks && (
+                                    <div className="book-cover" style={{ 
+                                        width: 128, height: 193, 
+                                        backgroundImage: "url(" +  book.imageLinks.thumbnail + ")" }}>
+                                    </div>
+                                )}
                                 <div className="book-shelf-changer">
-                                    <select value={book.shelf ?book.shelf  :"none"} onChange={s => this.updateShelf(book, s.target.value)}>
+                                    <select value="none" onChange={s => this.props.updateShelf(book, s.target.value)}>
                                     <option value="move" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>
